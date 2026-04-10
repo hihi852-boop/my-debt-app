@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>追數夾錢 Pro V4</title>
+    <style>
+        :root { --primary: #03A9F4; --bg: #E3F2FD; --card-bg: #ffffff; --text: #01579B; }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 20px 20px 100px 20px; color: var(--text); }
+        .header { background: linear-gradient(135deg, #03A9F4, #81D4FA); padding: 25px 20px; border-radius: 25px; color: white; text-align: center; margin-bottom: 20px; }
+        .tab-bar { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 15px; border: none; background: #B3E5FC; color: #0288D1; font-weight: bold; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .glass-card { background: var(--card-bg); border-radius: 22px; padding: 18px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h3 { margin-top: 0; font-size: 1rem; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 15px; }
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px; border: none; font-size: 1rem; box-sizing: border-box; }
+        input, select { background: #f1f8fc; border: 1px solid #e1f5fe; }
+        .btn-main { background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
+        .btn-sec { background: #81D4FA; color: white; font-size: 0.85rem; }
+        
+        /* 債務歸納樣式 */
+        .person-group { background: #f9feff; border: 1px solid #e1f5fe; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+        .person-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1f5fe; padding-bottom: 8px; margin-bottom: 10px; }
+        .person-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+        .person-total { font-size: 1.1rem; font-weight: 800; color: #ff5252; }
+        
+        .sub-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 1px dashed #e1f5fe; font-size: 0.9rem; }
+        .sub-item:last-child { border-bottom: none; }
+        .sub-info { flex: 1; }
+        .sub-info span { font-size: 0.75rem; color: #81D4FA; display: block; }
+        .sub-amt { text-align: right; font-weight: 600; }
+        .del-btn { color: #ff5252; font-size: 0.75rem; cursor: pointer; background: #fff0f0; padding: 2px 6px; border-radius: 5px; margin-left: 10px; }
+
+        .rate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .perc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; }
+        .perc-row input { margin-bottom: 0; width: 80px; text-align: center; }
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 style="margin:0; font-size:1.3rem;">💸 追數 & 夾錢 Pro V4</h1>
+</div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" id="tabDebt" onclick="switchTab('debt')">個人追數</button>
+    <button class="tab-btn" id="tabGroup" onclick="switchTab('group')">團隊夾錢</button>
+</div>
+
+<div class="glass-card">
+    <h3>🌍 匯率中心 (對 HKD)</h3>
+    <div class="rate-grid">
+        <input type="text" id="curName" placeholder="幣值 (如 JPY)">
+        <input type="number" id="curRate" placeholder="匯率 (如 0.052)">
+    </div>
+    <button class="btn-main" onclick="setManualRate()">更新匯率設定</button>
+    <div id="rateStatus" style="font-size:0.75rem; color:#03A9F4; line-height:1.5;"></div>
+</div>
+
+<div id="debtSection">
+    <div class="glass-card">
+        <h3>📝 記下一筆債務</h3>
+        <input type="text" id="pName" placeholder="人名">
+        <input type="text" id="pReason" placeholder="備註 (例如：Uber)">
+        <input type="number" id="pAmt" placeholder="金額">
+        <select id="pCur"></select>
+        <button class="btn-main" onclick="addDebt()">儲存紀錄</button>
+    </div>
+    <div class="glass-card">
+        <h3>📊 待收欠款 (按人名歸納)</h3>
+        <div id="debtList"></div>
+    </div>
+</div>
+
+<div id="groupSection" class="hide">
+    <div class="glass-card">
+        <h3>組別管理</h3>
+        <select id="groupSelect" onchange="loadGroup()"></select>
+        <div style="display: flex; gap: 5px; margin-top: 10px;">
+            <input type="text" id="newGroupName" placeholder="新組名" style="margin:0;">
+            <button class="btn-main" onclick="createNewGroup()" style="width:80px; margin:0;">開組</button>
+        </div>
+    </div>
+    <div id="activeGroupUI" class="hide">
+        <div class="glass-card">
+            <h3>👥 成員及佔比 (%)</h3>
+            <input type="text" id="mList" placeholder="成員名 (用中/英逗號隔開)">
+            <button class="btn-sec" onclick="setMembers()">1. 生成佔比列表</button>
+            <div id="percContainer" style="margin-top:15px;"></div>
+            <button class="btn-main" id="savePercBtn" class="hide" onclick="savePercentages()" style="background:#4FC3F7;">2. 確認百分比</button>
+        </div>
+        <div class="glass-card">
+            <h3>💰 混合入帳</h3>
+            <select id="payerSelect"></select>
+            <input type="number" id="gAmt" placeholder="支付金額">
+            <select id="gCur"></select>
+            <input type="text" id="gReason" placeholder="支出項目">
+            <button class="btn-main" onclick="addGroupExp()">儲存支出</button>
+            <div id="gLog" style="font-size: 0.8rem; color: #666; max-height: 150px; overflow-y: auto; margin-top:10px;"></div>
+            <button class="btn-main" onclick="calcGroup()" style="background:#FF9800; margin-top:15px;">📊 計算還錢方案</button>
+            <div id="gRes" class="hide" style="background:#E1F5FE; padding:15px; border-radius:15px; margin-top:10px; font-size:0.9rem; line-height:1.6;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let debts = JSON.parse(localStorage.getItem('myDebts_V4')) || [];
+    let rates = JSON.parse(localStorage.getItem('myRates_V4')) || { "HKD": 1, "JPY": 0.052, "TWD": 0.24, "USD": 7.8 };
+    let groups = JSON.parse(localStorage.getItem('myGroups_V4')) || {};
+    let curGroupKey = "";
+
+    function saveAll() {
+        localStorage.setItem('myDebts_V4', JSON.stringify(debts));
+        localStorage.setItem('myRates_V4', JSON.stringify(rates));
+        localStorage.setItem('myGroups_V4', JSON.stringify(groups));
+        updateUI();
+    }
+
+    function setManualRate() {
+        const n = document.getElementById('curName').value.toUpperCase(), r = document.getElementById('curRate').value;
+        if(n && r) { rates[n] = parseFloat(r); saveAll(); }
+    }
+
+    function updateUI() {
+        const status = document.getElementById('rateStatus');
+        status.innerHTML = "現行匯率：";
+        const selP = document.getElementById('pCur'); const selG = document.getElementById('gCur');
+        selP.innerHTML = ""; selG.innerHTML = "";
+        for(let c in rates) {
+            status.innerHTML += `${c}(${rates[c]}) `;
+            selP.innerHTML += `<option value="${c}">${c}</option>`;
+            selG.innerHTML += `<option value="${c}">${c}</option>`;
+        }
+
+        // ⭐ 個人債務歸納 Logic
+        const dList = document.getElementById('debtList'); dList.innerHTML = "";
+        
+        // 將 debts 按人名分組
+        const groupedDebts = {};
+        debts.forEach((d, originalIndex) => {
+            if (!groupedDebts[d.p]) groupedDebts[d.p] = { totalHKD: 0, items: [] };
+            const hkdVal = d.a * (rates[d.c] || 1);
+            groupedDebts[d.p].totalHKD += hkdVal;
+            groupedDebts[d.p].items.push({ ...d, originalIndex });
+        });
+
+        // 渲染分組後的 UI
+        for (let name in groupedDebts) {
+            const group = groupedDebts[name];
+            let itemsHTML = "";
+            group.items.forEach(item => {
+                itemsHTML += `
+                    <div class="sub-item">
+                        <div class="sub-info">
+                            ${item.r || '無備註'}
+                            <span>${item.a}${item.c}</span>
+                        </div>
+                        <div class="sub-amt">
+                            ≈$${(item.a * rates[item.c]).toFixed(1)}
+                            <span class="del-btn" onclick="delDebt(${item.originalIndex})">取消</span>
+                        </div>
+                    </div>`;
+            });
+
+            dList.innerHTML += `
+                <div class="person-group">
+                    <div class="person-header">
+                        <div class="person-name">👤 ${name}</div>
+                        <div class="person-total">Total: $${group.totalHKD.toFixed(1)}</div>
+                    </div>
+                    ${itemsHTML}
+                </div>`;
+        }
+
+        // 組別選單
+        const gSel = document.getElementById('groupSelect');
+        gSel.innerHTML = '<option value="">--- 揀選組別 ---</option>';
+        for(let k in groups) gSel.innerHTML += `<option value="${k}">${k}</option>`;
+        if(curGroupKey) gSel.value = curGroupKey;
+    }
+
+    function addDebt() {
+        const p = document.getElementById('pName').value, r = document.getElementById('pReason').value, a = document.getElementById('pAmt').value, c = document.getElementById('pCur').value;
+        if(p && a) { debts.push({p, r, a:parseFloat(a), c, date:new Date().getTime()}); saveAll(); }
+    }
+    function delDebt(i) { if(confirm('取消呢筆紀錄？')) { debts.splice(i, 1); saveAll(); } }
+
+    // --- 夾錢組別相關 (維持 V3 功能) ---
+    function createNewGroup() {
+        const name = document.getElementById('newGroupName').value;
+        if(name && !groups[name]) { groups[name] = { members: [], percs: {}, exps: [] }; curGroupKey = name; saveAll(); loadGroup(); }
+    }
+    function loadGroup() {
+        curGroupKey = document.getElementById('groupSelect').value;
+        const ui = document.getElementById('activeGroupUI');
+        if(!curGroupKey) { ui.classList.add('hide'); return; }
+        ui.classList.remove('hide');
+        const g = groups[curGroupKey];
+        document.getElementById('mList').value = g.members.join(', ');
+        renderPercFields(); updateGroupPayerList(); renderGroupLog();
+    }
+    function setMembers() {
+        const raw = document.getElementById('mList').value;
+        const list = raw.split(/[,，\s]+/).map(s => s.trim()).filter(s => s);
+        if(list.length < 1) return;
+        groups[curGroupKey].members = list;
+        renderPercFields(true);
+    }
+    function renderPercFields(isNew = false) {
+        const g = groups[curGroupKey];
+        const container = document.getElementById('percContainer');
+        container.innerHTML = "<strong>設定每人負擔 %：</strong><br><br>";
+        const defaultPerc = (100 / g.members.length).toFixed(1);
+        g.members.forEach(m => {
+            const val = isNew ? defaultPerc : (g.percs[m] || defaultPerc);
+            container.innerHTML += `<div class="perc-row"><span>${m}:</span><input type="number" class="m-perc" data-name="${m}" value="${val}"><span>%</span></div>`;
+        });
+        document.getElementById('savePercBtn').classList.remove('hide');
+    }
+    function savePercentages() {
+        const inputs = document.querySelectorAll('.m-perc');
+        let totalPerc = 0; const newPercs = {};
+        inputs.forEach(i => { const v = parseFloat(i.value); newPercs[i.dataset.name] = v; totalPerc += v; });
+        if(Math.abs(totalPerc - 100) > 0.1) return alert(`目前總和係 ${totalPerc}%，請調整至 100%！`);
+        groups[curGroupKey].percs = newPercs; saveAll(); updateGroupPayerList(); alert('成功！');
+    }
+    function updateGroupPayerList() {
+        const sel = document.getElementById('payerSelect'); sel.innerHTML = "";
+        groups[curGroupKey].members.forEach(m => sel.innerHTML += `<option value="${m}">${m}</option>`);
+    }
+    function addGroupExp() {
+        const p = document.getElementById('payerSelect').value, a = document.getElementById('gAmt').value, c = document.getElementById('gCur').value, r = document.getElementById('gReason').value;
+        if(a) { groups[curGroupKey].exps.push({p, a:parseFloat(a), c, r, id: new Date().getTime()}); saveAll(); renderGroupLog(); }
+    }
+    function renderGroupLog() {
+        const log = document.getElementById('gLog'); log.innerHTML = "<strong>支出紀錄：</strong><br>";
+        groups[curGroupKey].exps.forEach((e, i) => {
+            log.innerHTML += `• ${e.p}付 ${e.a}${e.c} (${e.r}) <span class="del-btn" onclick="delGroupExp(${i})">取消</span><br>`;
+        });
+    }
+    function delGroupExp(i) { if(confirm('取消？')) { groups[curGroupKey].exps.splice(i, 1); saveAll(); renderGroupLog(); } }
+    function calcGroup() {
+        const g = groups[curGroupKey]; const balances = {}; g.members.forEach(m => balances[m] = 0);
+        let totalHKD = 0;
+        g.exps.forEach(e => { const amtHKD = e.a * (rates[e.c] || 1); balances[e.p] += amtHKD; totalHKD += amtHKD; });
+        const resDiv = document.getElementById('gRes');
+        let resHTML = `<strong>總支出: HKD $${totalHKD.toFixed(1)}</strong><hr>`;
+        let creditors = [], debtors = [];
+        g.members.forEach(m => {
+            const shouldPay = totalHKD * (g.percs[m] / 100);
+            const diff = balances[m] - shouldPay;
+            if(diff > 0.1) creditors.push({n:m, a:diff});
+            else if(diff < -0.1) debtors.push({n:m, a:Math.abs(diff)});
+        });
+        debtors.forEach(d => {
+            creditors.forEach(c => {
+                let pay = Math.min(d.a, c.a);
+                if(pay > 0.1) { resHTML += `👉 <strong>${d.n}</strong> 俾 <strong>${c.n}</strong> HKD $${pay.toFixed(1)}<br>`; d.a -= pay; c.a -= pay; }
+            });
+        });
+        resDiv.innerHTML = resHTML; resDiv.classList.remove('hide');
+    }
+    function switchTab(t) {
+        document.getElementById('debtSection').classList.toggle('hide', t !== 'debt');
+        document.getElementById('groupSection').classList.toggle('hide', t !== 'group');
+        document.getElementById('tabDebt').classList.toggle('active', t === 'debt');
+        document.getElementById('tabGroup').classList.toggle('active', t === 'group');
+    }
+    updateUI();
+</script>
+
+</body>
+</html>
