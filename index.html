@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>追數助手 & 夾錢計算</title>
+    <style>
+        :root { --primary: #03A9F4; --bg: #E3F2FD; --card-bg: #ffffff; --text: #01579B; }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 20px 20px 100px 20px; color: var(--text); }
+        .header { background: linear-gradient(135deg, #03A9F4, #81D4FA); padding: 30px 20px; border-radius: 30px; color: white; text-align: center; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(3, 169, 244, 0.2); }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        
+        .tab-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 15px; border: none; background: #B3E5FC; color: #0288D1; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .glass-card { background: var(--card-bg); border-radius: 25px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h3 { margin-top: 0; font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+        input, select { background: #F1F8E9; border: 1px solid #E1F5FE; padding: 14px; border-radius: 15px; width: 100%; margin-bottom: 10px; box-sizing: border-box; font-size: 1rem; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 15px; width: 100%; font-weight: bold; font-size: 1rem; margin-top: 10px; }
+
+        /* 列表樣式 */
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #E1F5FE; }
+        .item-info div { font-weight: bold; }
+        .item-info span { font-size: 0.8rem; color: #4FC3F7; }
+        .item-amt { font-weight: bold; color: #0288D1; text-align: right; }
+        .settle-btn { font-size: 0.7rem; background: #e3f2fd; color: #03a9f4; padding: 5px 10px; border-radius: 8px; margin-top: 5px; display: inline-block; cursor: pointer; }
+
+        /* 匯率顯示 */
+        .rate-box { font-size: 0.8rem; color: #0288D1; background: #E1F5FE; padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+        
+        /* 夾錢結果 */
+        .result-box { background: #E1F5FE; padding: 15px; border-radius: 15px; margin-top: 15px; font-size: 0.9rem; line-height: 1.6; }
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>💸 追數 & 夾錢助手</h1>
+    <div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">清清楚楚，唔傷感情</div>
+</div>
+
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('debt')">個人追數</button>
+    <button class="tab-btn" onclick="switchTab('group')">團隊夾錢</button>
+</div>
+
+<div class="glass-card">
+    <h3>🌍 匯率設定 (1 外幣 = ? HKD)</h3>
+    <div style="display: flex; gap: 5px;">
+        <input type="text" id="curName" placeholder="幣值 (如 JPY)" style="width: 40%;">
+        <input type="number" id="curRate" placeholder="匯率 (如 0.052)" style="width: 60%;">
+    </div>
+    <button class="btn-add" onclick="setRate()" style="background: #4FC3F7;">更新匯率</button>
+    <div id="rateList" class="rate-box" style="margin-top: 10px;">現時匯率：1 HKD = 1 HKD</div>
+</div>
+
+<div id="debtSection">
+    <div class="glass-card">
+        <h3>📝 記下一筆借貸</h3>
+        <input type="text" id="person" placeholder="人名 (邊個差你錢？)">
+        <input type="text" id="reason" placeholder="備註 (點解借？例如：買飯)">
+        <input type="number" id="amt" placeholder="金額">
+        <select id="currency"></select>
+        <button class="btn-add" onclick="addDebt()">儲存紀錄</button>
+    </div>
+
+    <div class="glass-card">
+        <h3>📊 待收回欠款</h3>
+        <div id="debtList"></div>
+    </div>
+</div>
+
+<div id="groupSection" class="hide">
+    <div class="glass-card">
+        <h3>👥 建立團隊 / 項目</h3>
+        <input type="text" id="members" placeholder="成員名 (用逗號隔開，如：B, C, 我)">
+        <button class="btn-add" onclick="initGroup()">開始分帳</button>
+    </div>
+
+    <div class="glass-card" id="groupEntry" class="hide">
+        <h3>💰 邊個比咗錢？</h3>
+        <select id="payerSelect"></select>
+        <input type="number" id="groupAmt" placeholder="比咗幾多錢？">
+        <input type="text" id="groupReason" placeholder="係咩支出？ (如：飲嘢)">
+        <button class="btn-add" onclick="addGroupExp()">入帳</button>
+        
+        <div id="groupLog" style="margin-top: 15px; font-size: 0.85rem; color: #555;"></div>
+        <button class="btn-add" style="background: #FF9800;" onclick="calculateSplit()">📊 計算最終還錢方案</button>
+        <div id="splitResult" class="result-box hide"></div>
+    </div>
+</div>
+
+<script>
+    let debts = JSON.parse(localStorage.getItem('myDebts')) || [];
+    let rates = JSON.parse(localStorage.getItem('myRates')) || { "HKD": 1 };
+    let groupMembers = [];
+    let groupExps = [];
+
+    function switchTab(tab) {
+        document.getElementById('debtSection').classList.toggle('hide', tab !== 'debt');
+        document.getElementById('groupSection').classList.toggle('hide', tab !== 'group');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.innerText.includes(tab === 'debt' ? '個人' : '團隊')));
+    }
+
+    function setRate() {
+        const n = document.getElementById('curName').value.toUpperCase();
+        const r = document.getElementById('curRate').value;
+        if(!n || !r) return;
+        rates[n] = parseFloat(r);
+        localStorage.setItem('myRates', JSON.stringify(rates));
+        updateRatesUI();
+    }
+
+    function updateRatesUI() {
+        let h = '現時匯率：<br>';
+        for(let c in rates) h += `1 ${c} = ${rates[c]} HKD<br>`;
+        document.getElementById('rateList').innerHTML = h;
+        const sel = document.getElementById('currency');
+        sel.innerHTML = '';
+        for(let c in rates) sel.innerHTML += `<option value="${c}">${c}</option>`;
+    }
+
+    function addDebt() {
+        const p = document.getElementById('person').value;
+        const r = document.getElementById('reason').value;
+        const a = document.getElementById('amt').value;
+        const c = document.getElementById('currency').value;
+        if(!p || !a) return alert('入名人名同金額！');
+        
+        debts.push({ p, r, a: parseFloat(a), c, date: new Date().toISOString() });
+        localStorage.setItem('myDebts', JSON.stringify(debts));
+        updateDebtUI();
+    }
+
+    function updateDebtUI() {
+        const list = document.getElementById('debtList');
+        list.innerHTML = '';
+        debts.forEach((d, i) => {
+            const hkdAmt = (d.a * rates[d.c]).toFixed(2);
+            list.innerHTML += `
+                <div class="item">
+                    <div class="item-info">
+                        <div>${d.p}</div>
+                        <span>${d.r} (${new Date(d.date).toLocaleDateString()})</span>
+                    </div>
+                    <div class="item-right">
+                        <div class="item-amt">${d.a} ${d.c}</div>
+                        <div style="font-size: 0.7rem; color: #999;">≈ HKD $${hkdAmt}</div>
+                        <div class="settle-btn" onclick="clearDebt(${i})">已還錢</div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function clearDebt(i) {
+        if(confirm('確定呢筆數已經清咗？')) { debts.splice(i, 1); localStorage.setItem('myDebts', JSON.stringify(debts)); updateDebtUI(); }
+    }
+
+    // 夾錢邏輯
+    function initGroup() {
+        const m = document.getElementById('members').value;
+        if(!m) return;
+        groupMembers = m.split(',').map(s => s.trim());
+        const sel = document.getElementById('payerSelect');
+        sel.innerHTML = '';
+        groupMembers.forEach(person => sel.innerHTML += `<option value="${person}">${person}</option>`);
+        document.getElementById('groupEntry').style.display = 'block';
+        groupExps = [];
+        document.getElementById('groupLog').innerHTML = '';
+        document.getElementById('splitResult').classList.add('hide');
+    }
+
+    function addGroupExp() {
+        const p = document.getElementById('payerSelect').value;
+        const a = parseFloat(document.getElementById('groupAmt').value);
+        const r = document.getElementById('groupReason').value;
+        if(!a) return;
+        groupExps.push({ p, a, r });
+        document.getElementById('groupLog').innerHTML += `✅ ${p} 比咗 $${a} (${r})<br>`;
+        document.getElementById('groupAmt').value = '';
+    }
+
+    function calculateSplit() {
+        const balances = {};
+        groupMembers.forEach(m => balances[m] = 0);
+        
+        let total = 0;
+        groupExps.forEach(e => {
+            balances[e.p] += e.a;
+            total += e.a;
+        });
+
+        const share = total / groupMembers.length;
+        const resDiv = document.getElementById('splitResult');
+        resDiv.innerHTML = `<strong>總支出：$${total.toFixed(2)}</strong><br>每人應付：$${share.toFixed(2)}<hr>`;
+
+        let creditors = [], debtors = [];
+        for(let m in balances) {
+            let diff = balances[m] - share;
+            if(diff > 0.01) creditors.push({ n: m, a: diff });
+            else if(diff < -0.01) debtors.push({ n: m, a: Math.abs(diff) });
+        }
+
+        let resultHTML = "";
+        debtors.forEach(d => {
+            creditors.forEach(c => {
+                if(d.a > 0 && c.a > 0) {
+                    let pay = Math.min(d.a, c.a);
+                    resultHTML += `👉 <strong>${d.n}</strong> 要比 <strong>${c.n}</strong> $${pay.toFixed(1)}<br>`;
+                    d.a -= pay; c.a -= pay;
+                }
+            });
+        });
+
+        resDiv.innerHTML += resultHTML || "大家啱啱好，唔使找數！";
+        resDiv.classList.remove('hide');
+    }
+
+    updateRatesUI();
+    updateDebtUI();
+</script>
+
+</body>
+</html>
