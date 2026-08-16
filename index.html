@@ -6,10 +6,10 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>追數易 v1.30</title>
+    <title>追數易 v11.4</title>
     <style>
         :root { --primary: #03A9F4; --bg: #E3F2FD; --card-bg: #ffffff; --text: #01579B; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 20px 20px 100px 20px; color: var(--text); }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 20px 20px 100px 20px; color: var(--text); }
         .header { background: linear-gradient(135deg, #03A9F4, #81D4FA); padding: 25px 20px; border-radius: 25px; color: white; text-align: center; margin-bottom: 20px; }
         .header h1 { margin: 0; font-size: 1.3rem; }
         .header p { margin: 5px 0 0 0; font-size: 0.75rem; opacity: 0.85; font-weight: bold; }
@@ -19,11 +19,8 @@
         .tab-btn.active { background: var(--primary); color: white; }
         .glass-card { background: var(--card-bg); border-radius: 22px; padding: 18px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         h3 { margin-top: 0; font-size: 1rem; border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 15px; }
-        
-        input:not([type="checkbox"]):not([type="radio"]), select, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px; border: none; font-size: 1rem; box-sizing: border-box; }
-        input:not([type="checkbox"]):not([type="radio"]), select { background: #f1f8fc; border: 1px solid #e1f5fe; }
-        input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
-        
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px; border: none; font-size: 1rem; box-sizing: border-box; }
+        input, select { background: #f1f8fc; border: 1px solid #e1f5fe; }
         .btn-main { background: var(--primary); color: white; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #0288D1; }
         .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #0288D1; }
         .btn-green { background: #4CAF50; box-shadow: 0 4px 0 #2E7D32; }
@@ -37,23 +34,14 @@
         .welcome-content ul { text-align: left; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.6; }
 
         .participant-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-        .member-chip { display: flex; align-items: center; background: white; border: 1px solid #B3E5FC; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; min-width: 80px; gap: 8px; cursor: pointer; }
+        .member-chip { display: flex; align-items: center; background: white; border: 1px solid #B3E5FC; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; min-width: 80px; }
+        .member-chip input { width: 18px; height: 18px; margin: 0 8px 0 0; }
         .person-group { background: #f9feff; border: 1px solid #e1f5fe; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
         .person-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1f5fe; padding-bottom: 8px; margin-bottom: 10px; }
         .sub-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e1f5fe; font-size: 0.85rem; }
-        .del-btn { color: #ff5252; font-size: 0.75rem; cursor: pointer; background: #fff0f0; padding: 2px 6px; border-radius: 5px; font-weight: bold; margin-left: 6px; }
-        
-        /* 圓形刪除圖示 */
-        .del-icon { color: #D32F2F; margin-left: auto; cursor: pointer; font-weight: bold; background: #FFEBEE; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-
-        .split-row { display: flex; align-items: center; gap: 12px; font-size: 0.88rem; margin: 12px 0; flex-wrap: wrap; }
-        .radio-item { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
-
-        .settle-line { margin-bottom: 12px; padding: 12px; background: #E1F5FE; border-radius: 14px; border: 1px solid #B3E5FC; transition: all 0.2s; }
-        .settle-line.is-settled { background: #E8F5E9; border-color: #A5D6A7; opacity: 0.85; }
-        .settle-foreign { display: block; font-size: 0.75rem; color: #0288D1; margin-top: 4px; border-top: 1px dashed #B3E5FC; padding-top: 4px; }
-        .settle-inputs { margin-top: 10px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 8px; font-size: 0.8rem; }
-        .settle-inputs input { padding: 8px !important; margin-bottom: 0 !important; font-size: 0.85rem !important; border-radius: 8px !important; background: white !important; }
+        .del-btn { color: #ff5252; font-size: 0.75rem; cursor: pointer; background: #fff0f0; padding: 2px 6px; border-radius: 5px; font-weight: bold; }
+        .settle-line { margin-bottom: 10px; padding: 10px; background: #E1F5FE; border-radius: 12px; }
+        .settle-foreign { display: block; font-size: 0.75rem; color: #0288D1; margin-top: 4px; border-top: 1px solid #B3E5FC; padding-top: 4px; }
         .hide { display: none; }
     </style>
 </head>
@@ -64,19 +52,19 @@
         <h2>歡迎使用 追數易 👋</h2>
         <ul>
             <li>🔒 <strong>100% 私隱：</strong> 數據只會儲喺呢部手機。我係唔會知道你入邊嘅所有數據，唔會知道你嘅IP位置，所以可以放心使用</li>
-            <li>🚫 <strong>不用網絡：</strong> 呢個app可以離線使用</li>
+            <li>🚫 <strong>不用網絡：</strong>呢個app可以離線使用</li>
             <li>🌍 <strong>多幣值：</strong> 去旅行記外幣一樣得。</li>
             <li>👥 <strong>精準分帳：</strong> 出街食飯，每一筆錢都可以揀邊個分。</li>
             <li>📦 <strong>備份：</strong> 記得定時匯出 CSV 備份！因為我唔會有你嘅data，所以清理咗Browser嘅快取之後，數據會消失</li>
-            <li>⚠️ <strong>如果有數據遺失，我唔包㗎</strong></li>
+            <li> <strong>如果有數據遺失，我唔包㗎</li>
         </ul>
         <button id="welcomeBtn" class="btn-main" onclick="closeWelcome()" disabled style="opacity: 0.5;">開始使用 (7s)</button>
     </div>
 </div>
 
 <div class="header">
-    <h1>💸 追數易 v1.30</h1>
-    <p>⚠️ 記得定時匯出 CSV 備份數據呀！清理 Browser 快取後數據會消失</p>
+    <h1>💸 追數易 v11.4</h1>
+    <p>⚠️ 記得定時匯出 CSV 備份數據呀！因為如果你手痕去Setting清理咗Browser嘅快取，數據會消失</p>
 </div>
 
 <div class="tab-bar">
@@ -121,25 +109,14 @@
             <button class="btn-main btn-green" onclick="createNewGroup()" style="width:80px; margin-bottom:0;">開組</button>
         </div>
     </div>
-    
     <div id="activeGroupUI" class="hide">
         <div class="glass-card">
-            <h3>👥 1. 設定成員及預設佔比</h3>
-            <div style="display: flex; gap: 5px;">
-                <input type="text" id="mList" placeholder="名1, 名2 (用逗號隔開)" style="margin-bottom:0;">
-                <button class="btn-main" onclick="setMembers()" style="width:120px; margin-bottom:0;">更新名單</button>
-            </div>
-            
-            <div id="percContainer" style="margin-top:15px; font-size: 0.9rem;"></div>
-            
-            <button class="btn-main btn-green hide" id="savePercBtn" onclick="savePercentages()" style="margin-top:10px;">確認自訂佔比</button>
-            
-            <!-- 新增溫馨提示 -->
-            <div style="font-size: 0.75rem; color: #757575; margin-top: 15px; line-height: 1.4; padding: 10px; background: #f5f5f5; border-radius: 8px; border: 1px solid #eeeeee;">
-                💡 <strong>小提示：</strong>呢度設定嘅只係群組嘅「預設」分帳比例。去到下面入帳時，你依然可以按每一次嘅消費獨立微調或自訂比例，絕對唔會被綁死！
-            </div>
+            <h3>👥 1. 設定成員及預設佔比 (%)</h3>
+            <input type="text" id="mList" placeholder="名1, 名2">
+            <button class="btn-main" onclick="setMembers()">生成預設佔比表</button>
+            <div id="percContainer" style="margin-top:10px; font-size: 0.9rem;"></div>
+            <button class="btn-main btn-green hide" id="savePercBtn" onclick="savePercentages()">確認預設百分比</button>
         </div>
-        
         <div class="glass-card">
             <h3>💰 2. 混合入帳</h3>
             <select id="payerSelect"></select>
@@ -148,19 +125,11 @@
             <input type="text" id="gReason" placeholder="備註">
             <div class="share-box">
                 <div id="participantList" class="participant-grid"></div>
-                
-                <div class="split-row">
-                    <span style="font-weight: bold;">該筆分帳方式：</span>
-                    <label class="radio-item">
-                        <input type="radio" name="splitType" value="default" checked onclick="toggleSplitUI()">
-                        <span>跟預設比例</span>
-                    </label>
-                    <label class="radio-item">
-                        <input type="radio" name="splitType" value="custom" onclick="toggleSplitUI()">
-                        <span>單筆自訂 %</span>
-                    </label>
+                <div style="font-size: 0.85rem; margin-top:10px;">
+                    分帳方式：
+                    <input type="radio" name="splitType" value="default" checked onclick="toggleSplitUI()"> 跟預設 %
+                    <input type="radio" name="splitType" value="custom" onclick="toggleSplitUI()"> 自訂 %
                 </div>
-                
                 <div id="customItemPercUI" class="hide" style="margin-top:10px; padding:10px; background:white; border-radius:12px;"></div>
             </div>
             <button class="btn-main" onclick="addGroupExp()">儲存此筆支出</button>
@@ -189,248 +158,84 @@
     let groups = JSON.parse(localStorage.getItem('myGroups_V9')) || {};
     let curGroupKey = "";
 
-    function saveAll() {
-        localStorage.setItem('myDebts_V9', JSON.stringify(debts));
-        localStorage.setItem('myRates_V9', JSON.stringify(rates));
-        localStorage.setItem('myGroups_V9', JSON.stringify(groups));
-        updateUI();
-    }
+    function saveAll() { localStorage.setItem('myDebts_V9', JSON.stringify(debts)); localStorage.setItem('myRates_V9', JSON.stringify(rates)); localStorage.setItem('myGroups_V9', JSON.stringify(groups)); updateUI(); }
 
-    function parseFraction(val) {
-        if (typeof val === 'number') return isNaN(val) ? 0 : val;
-        if (!val) return 0;
-        val = String(val).trim();
-        if (val.includes('/')) {
-            const parts = val.split('/');
-            const num = parseFloat(parts[0]);
-            const den = parseFloat(parts[1]);
-            return (den !== 0 && !isNaN(num) && !isNaN(den)) ? (num / den) : 0;
-        }
-        const parsed = parseFloat(val);
-        return isNaN(parsed) ? 0 : parsed;
-    }
+   window.onload = function() {
+    // 檢查係咪第一次用
+    if (!localStorage.getItem('v11_welcome_done')) {
+        const overlay = document.getElementById('welcomeOverlay');
+        const btn = document.getElementById('welcomeBtn');
+        overlay.style.display = 'flex';
 
-    window.onload = function() {
-        if (!localStorage.getItem('v11_welcome_done')) {
-            const overlay = document.getElementById('welcomeOverlay');
-            const btn = document.getElementById('welcomeBtn');
-            overlay.style.display = 'flex';
-            let timeLeft = 7;
-            const timer = setInterval(() => {
-                timeLeft--;
-                if (timeLeft > 0) {
-                    btn.innerText = `開始使用 (${timeLeft}s)`;
-                } else {
-                    btn.innerText = "開始使用";
-                    btn.disabled = false;
-                    btn.style.opacity = "1";
-                    clearInterval(timer);
-                }
-            }, 1000);
-        }
-    };
-
-    function closeWelcome() {
-        localStorage.setItem('v11_welcome_done', 'true');
-        document.getElementById('welcomeOverlay').style.display = 'none';
+        let timeLeft = 7; // 設定倒數秒數
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                btn.innerText = `開始使用 (${timeLeft}s)`;
+            } else {
+                btn.innerText = "開始使用";
+                btn.disabled = false;    // 解鎖粒掣
+                btn.style.opacity = "1"; // 變返鮮色
+                clearInterval(timer);    // 停左個計時器
+            }
+        }, 1000); // 每 1 秒行一次
     }
+};
+    function closeWelcome() { localStorage.setItem('v11_welcome_done', 'true'); document.getElementById('welcomeOverlay').style.display = 'none'; }
 
     function deleteGroup() {
         if (!curGroupKey) return;
-        if (confirm(`真係要剷咗「${curGroupKey}」呢個組？`)) {
-            delete groups[curGroupKey];
-            curGroupKey = "";
-            saveAll();
-            alert('組別已刪除');
-        }
+        if (confirm(`真係要剷咗「${curGroupKey}」呢個組？`)) { delete groups[curGroupKey]; curGroupKey = ""; saveAll(); alert('組別已刪除'); }
     }
 
-    function setManualRate() {
-        const n = document.getElementById('curName').value.toUpperCase(), r = document.getElementById('curRate').value;
-        if(n && r) { rates[n] = parseFloat(r); saveAll(); }
-    }
+    function setManualRate() { const n = document.getElementById('curName').value.toUpperCase(), r = document.getElementById('curRate').value; if(n && r) { rates[n] = parseFloat(r); saveAll(); } }
     
     function updateUI() {
-        const status = document.getElementById('rateStatus');
-        status.innerHTML = "現行：";
+        const status = document.getElementById('rateStatus'); status.innerHTML = "現行：";
         const selP = document.getElementById('pCur'), selG = document.getElementById('gCur');
         selP.innerHTML = ""; selG.innerHTML = "";
-        for(let c in rates) {
-            status.innerHTML += `${c}(${rates[c]}) `;
-            selP.innerHTML += `<option value="${c}">${c}</option>`;
-            selG.innerHTML += `<option value="${c}">${c}</option>`;
-        }
-        const dList = document.getElementById('debtList');
-        dList.innerHTML = "";
+        for(let c in rates) { status.innerHTML += `${c}(${rates[c]}) `; selP.innerHTML += `<option value="${c}">${c}</option>`; selG.innerHTML += `<option value="${c}">${c}</option>`; }
+        const dList = document.getElementById('debtList'); dList.innerHTML = "";
         const grouped = {};
-        debts.forEach((d, idx) => {
-            if (!grouped[d.p]) grouped[d.p] = { total: 0, items: [] };
-            grouped[d.p].total += d.a * (rates[d.c] || 1);
-            grouped[d.p].items.push({ ...d, idx });
-        });
+        debts.forEach((d, idx) => { if (!grouped[d.p]) grouped[d.p] = { total: 0, items: [] }; grouped[d.p].total += d.a * (rates[d.c] || 1); grouped[d.p].items.push({ ...d, idx }); });
         for (let name in grouped) {
-            let sub = "";
-            grouped[name].items.forEach(i => sub += `<div class="sub-item"><div>${i.r || '借貸'}<br><small>${i.a}${i.c}</small></div><div style="text-align:right">≈$${(i.a * rates[i.c]).toFixed(1)}<span class="del-btn" onclick="delDebt(${i.idx})">取消</span></div></div>`);
+            let sub = ""; grouped[name].items.forEach(i => sub += `<div class="sub-item"><div>${i.r || '借貸'}<br><small>${i.a}${i.c}</small></div><div style="text-align:right">≈$${(i.a * rates[i.c]).toFixed(1)}<span class="del-btn" onclick="delDebt(${i.idx})">取消</span></div></div>`);
             dList.innerHTML += `<div class="person-group"><div class="person-header"><strong>👤 ${name}</strong><div style="color:#ff5252;font-weight:800;">$${grouped[name].total.toFixed(1)}</div></div>${sub}</div>`;
         }
-        const gSel = document.getElementById('groupSelect');
-        gSel.innerHTML = '<option value="">--- 揀選組別 ---</option>';
+        const gSel = document.getElementById('groupSelect'); gSel.innerHTML = '<option value="">--- 揀選組別 ---</option>';
         for(let k in groups) gSel.innerHTML += `<option value="${k}">${k}</option>`;
         if(curGroupKey) gSel.value = curGroupKey;
     }
 
-    function addDebt() {
-        const p = document.getElementById('pName').value, r = document.getElementById('pReason').value, a = document.getElementById('pAmt').value, c = document.getElementById('pCur').value;
-        if(p && a) { debts.push({p, r, a:parseFloat(a), c}); saveAll(); }
-    }
+    function addDebt() { const p = document.getElementById('pName').value, r = document.getElementById('pReason').value, a = document.getElementById('pAmt').value, c = document.getElementById('pCur').value; if(p && a) { debts.push({p, r, a:parseFloat(a), c}); saveAll(); } }
     function delDebt(i) { if(confirm('取消？')) { debts.splice(i, 1); saveAll(); } }
-    function createNewGroup() {
-        const name = document.getElementById('newGroupName').value.trim();
-        if(name && !groups[name]) {
-            groups[name] = { members: [], percs: {}, exps: [], settlements: {}, defaultSplitMode: 'even' };
-            curGroupKey = name;
-            saveAll();
-            loadGroup();
-        }
-    }
+    function createNewGroup() { const name = document.getElementById('newGroupName').value; if(name && !groups[name]) { groups[name] = { members: [], percs: {}, exps: [] }; curGroupKey = name; saveAll(); loadGroup(); } }
     
     function loadGroup() {
         curGroupKey = document.getElementById('groupSelect').value;
         const ui = document.getElementById('activeGroupUI'), delBtn = document.getElementById('btnDelGroup');
         if(!curGroupKey) { ui.classList.add('hide'); delBtn.style.display = 'none'; return; }
         ui.classList.remove('hide'); delBtn.style.display = 'block';
-        if (!groups[curGroupKey].settlements) groups[curGroupKey].settlements = {};
-        if (!groups[curGroupKey].defaultSplitMode) groups[curGroupKey].defaultSplitMode = 'even';
-        
         document.getElementById('mList').value = groups[curGroupKey].members.join(', ');
-        renderGlobalPercs();
-        updateGroupEntryUI();
-        renderGroupLog();
-        document.getElementById('gRes').classList.add('hide');
+        renderGlobalPercs(); updateGroupEntryUI(); renderGroupLog();
     }
 
-    function setMembers() {
-        const list = document.getElementById('mList').value.split(/[,，]+/).map(s => s.trim()).filter(s => s);
-        if(!list.length) return alert('請先輸入成員名稱！');
-        groups[curGroupKey].members = [...new Set(list)];
-        
-        if (groups[curGroupKey].defaultSplitMode === 'even') {
-            const count = groups[curGroupKey].members.length;
-            let newP = {};
-            groups[curGroupKey].members.forEach(m => newP[m] = count > 0 ? `1/${count}` : "1");
-            groups[curGroupKey].percs = newP;
-        }
-        
-        saveAll();
-        renderGlobalPercs();
-        updateGroupEntryUI();
-        alert('名單已更新！');
-    }
+    function setMembers() { const list = document.getElementById('mList').value.split(/[,，]+/).map(s => s.trim()).filter(s => s); if(!list.length) return alert('請先入名！'); groups[curGroupKey].members = list; renderGlobalPercs(true); }
     
-    function changeGroupSplitMode(mode) {
-        groups[curGroupKey].defaultSplitMode = mode;
-        if (mode === 'even') {
-            const count = groups[curGroupKey].members.length;
-            let newP = {};
-            groups[curGroupKey].members.forEach(m => newP[m] = count > 0 ? `1/${count}` : "1");
-            groups[curGroupKey].percs = newP;
-            saveAll();
-            renderGlobalPercs();
-        } else {
-            renderGlobalPercs();
-        }
-    }
-
-    function removeMember(mName) {
-        if(confirm(`確定要刪除成員「${mName}」？`)) {
-            groups[curGroupKey].members = groups[curGroupKey].members.filter(m => m !== mName);
-            if (groups[curGroupKey].percs) {
-                delete groups[curGroupKey].percs[mName];
-            }
-            document.getElementById('mList').value = groups[curGroupKey].members.join(', ');
-            
-            if (groups[curGroupKey].defaultSplitMode === 'even') {
-                const count = groups[curGroupKey].members.length;
-                let newP = {};
-                groups[curGroupKey].members.forEach(m => newP[m] = count > 0 ? `1/${count}` : "1");
-                groups[curGroupKey].percs = newP;
-            }
-            saveAll(); 
-            loadGroup(); 
-        }
-    }
-    
-    function renderGlobalPercs() {
-        const g = groups[curGroupKey];
-        const container = document.getElementById('percContainer');
-        if(!g || !g.members.length) { 
-            container.innerHTML = ""; 
-            document.getElementById('savePercBtn').classList.add('hide'); 
-            return; 
-        }
-        
-        let mode = g.defaultSplitMode || 'even';
-        const count = g.members.length;
-        const defFrac = count > 0 ? `1/${count}` : "1";
-
-        let html = `
-            <div class="split-row" style="margin-bottom: 15px; background: #f9feff; padding: 10px; border-radius: 10px; border: 1px solid #e1f5fe;">
-                <span style="font-weight: bold; color: #0288D1;">群組預設模式：</span>
-                <label class="radio-item">
-                    <input type="radio" name="gSplitMode" value="even" ${mode==='even'?'checked':''} onchange="changeGroupSplitMode('even')">
-                    <span>按人頭除開</span>
-                </label>
-                <label class="radio-item">
-                    <input type="radio" name="gSplitMode" value="custom" ${mode==='custom'?'checked':''} onchange="changeGroupSplitMode('custom')">
-                    <span>自訂比例</span>
-                </label>
-            </div>
-        `;
-
-        if (mode === 'custom') {
-            html += `<div style="margin-bottom:10px; font-size:0.85rem; color:#555;">可輸入分數 (如 1/3) 或數值份數：</div>`;
-            g.members.forEach(m => {
-                const val = (g.percs && g.percs[m] !== undefined) ? g.percs[m] : defFrac;
-                html += `
-                    <div style="margin:8px 0; display:flex; align-items:center; gap:8px;">
-                        <span style="min-width:60px;">${m}:</span>
-                        <input type="text" class="g-perc" data-name="${m}" value="${val}" style="width:85px; padding:6px; margin-bottom:0; background:white; text-align:center;">
-                        <span class="del-btn" style="margin-left:auto;" onclick="removeMember('${m}')">❌ 刪除</span>
-                    </div>
-                `;
-            });
-            document.getElementById('savePercBtn').classList.remove('hide');
-        } else {
-            html += `<div style="margin-bottom:10px; font-size:0.85rem; color:#555;">已自動按 ${count} 個人頭平分：</div>`;
-            html += `<div style="display:flex; flex-wrap:wrap; gap:8px;">`;
-            g.members.forEach(m => {
-                html += `<div class="member-chip" style="background:#E8F5E9; border-color:#A5D6A7; cursor:default; padding-right:6px;">
-                            👤 ${m} 
-                            <div class="del-icon" onclick="removeMember('${m}')" title="刪除此人">✖</div>
-                         </div>`;
-            });
-            html += `</div>`;
-            document.getElementById('savePercBtn').classList.add('hide');
-        }
-        
-        container.innerHTML = html;
+    function renderGlobalPercs(isNew = false) {
+        const g = groups[curGroupKey]; const container = document.getElementById('percContainer');
+        if(!g.members.length) { container.innerHTML = ""; return; }
+        container.innerHTML = "<strong>預設佔比：</strong><br>";
+        const def = (100 / g.members.length).toFixed(1);
+        g.members.forEach(m => { const val = isNew ? def : (g.percs[m] || def); container.innerHTML += `<div style="margin:8px 0;">${m}: <input type="number" class="g-perc" data-name="${m}" value="${val}" style="width:65px; padding:5px; margin-bottom:0;"> %</div>`; });
+        document.getElementById('savePercBtn').classList.remove('hide');
     }
 
     function savePercentages() {
-        const inputs = document.querySelectorAll('.g-perc');
-        const newP = {};
-        let hasError = false;
-        inputs.forEach(i => {
-            const val = i.value.trim();
-            const parsed = parseFraction(val);
-            if (parsed <= 0) hasError = true;
-            newP[i.dataset.name] = val;
-        });
-        if (hasError) return alert('請輸入有效嘅分數或數值（如 1/7、2/7 或 1）！');
-        groups[curGroupKey].percs = newP;
-        saveAll();
-        updateGroupEntryUI();
-        alert('自訂佔比已儲存！');
+        const inputs = document.querySelectorAll('.g-perc'); let total = 0; const newP = {};
+        inputs.forEach(i => { const v = parseFloat(i.value) || 0; newP[i.dataset.name] = v; total += v; });
+        if(Math.abs(total - 100) > 0.1) return alert('總和唔係 100%！');
+        groups[curGroupKey].percs = newP; saveAll(); updateGroupEntryUI(); alert('已確認！');
     }
 
     function updateGroupEntryUI() {
@@ -445,246 +250,72 @@
         refreshCustomUI();
     }
 
-    function toggleSplitUI() {
-        document.getElementById('customItemPercUI').classList.toggle('hide', document.querySelector('input[name="splitType"]:checked').value !== 'custom');
-    }
-    
-    function refreshCustomUI() {
-        document.querySelectorAll('.p-check').forEach(c => {
-            const row = document.getElementById(`row-${c.value}`);
-            if(row) row.style.display = c.checked ? 'flex' : 'none';
-        });
-    }
+    function toggleSplitUI() { document.getElementById('customItemPercUI').classList.toggle('hide', document.querySelector('input[name="splitType"]:checked').value !== 'custom'); }
+    function refreshCustomUI() { document.querySelectorAll('.p-check').forEach(c => { const row = document.getElementById(`row-${c.value}`); if(row) row.style.display = c.checked ? 'flex' : 'none'; }); }
 
     function addGroupExp() {
         const p = document.getElementById('payerSelect').value, a = document.getElementById('gAmt').value, c = document.getElementById('gCur').value, r = document.getElementById('gReason').value, type = document.querySelector('input[name="splitType"]:checked').value, participants = Array.from(document.querySelectorAll('.p-check:checked')).map(cb => cb.value);
         if(!a || !participants.length) return alert('資料未齊！');
         let itemPercs = null;
-        if(type === 'custom') {
-            itemPercs = {}; let total = 0;
-            participants.forEach(m => {
-                const v = parseFloat(document.querySelector(`.i-perc[data-name="${m}"]`).value) || 0;
-                itemPercs[m] = v; total += v;
-            });
-            if(Math.abs(total - 100) > 0.1) return alert('自訂總和唔係 100%！');
-        }
+        if(type === 'custom') { itemPercs = {}; let total = 0; participants.forEach(m => { const v = parseFloat(document.querySelector(`.i-perc[data-name="${m}"]`).value) || 0; itemPercs[m] = v; total += v; }); if(Math.abs(total - 100) > 0.1) return alert('總和唔係 100%！'); }
         groups[curGroupKey].exps.push({ p, a:parseFloat(a), c, r, participants, splitType: type, customPercs: itemPercs });
-        saveAll();
-        renderGroupLog();
-        document.getElementById('gAmt').value = "";
-        document.getElementById('gReason').value = "";
+        saveAll(); renderGroupLog(); document.getElementById('gAmt').value = ""; document.getElementById('gReason').value = "";
     }
 
-    function renderGroupLog() {
-        const log = document.getElementById('gLog');
-        log.innerHTML = "<strong>紀錄：</strong><br>";
-        if(curGroupKey && groups[curGroupKey]) {
-            groups[curGroupKey].exps.forEach((e, i) => {
-                log.innerHTML += `• ${e.p}付${e.a}${e.c} (${e.participants.join('/')}) <span class="del-btn" onclick="delGExp(${i})">取消</span><br>`;
-            });
-        }
-    }
-    
-    function delGExp(i) {
-        groups[curGroupKey].exps.splice(i, 1);
-        saveAll();
-        renderGroupLog();
-    }
+    function renderGroupLog() { const log = document.getElementById('gLog'); log.innerHTML = "<strong>紀錄：</strong><br>"; if(curGroupKey && groups[curGroupKey]) groups[curGroupKey].exps.forEach((e, i) => log.innerHTML += `• ${e.p}付${e.a}${e.c} (${e.participants.join('/')}) <span class="del-btn" onclick="delGExp(${i})">取消</span><br>`); }
+    function delGExp(i) { groups[curGroupKey].exps.splice(i, 1); saveAll(); renderGroupLog(); }
 
     function calcGroup() {
-        const g = groups[curGroupKey];
-        if(!g || !g.members.length) return;
-        if(!g.settlements) g.settlements = {};
-        
-        const balances = {};
-        g.members.forEach(m => balances[m] = 0);
-        let totalHKD = 0;
-        let usedCurrencies = new Set();
-        
+        const g = groups[curGroupKey]; if(!g.members.length) return;
+        const balances = {}; g.members.forEach(m => balances[m] = 0);
+        let totalHKD = 0; let usedCurrencies = new Set();
         g.exps.forEach(e => {
-            const amtHKD = e.a * (rates[e.c] || 1);
-            balances[e.p] += amtHKD;
-            totalHKD += amtHKD;
-            if (e.c !== 'HKD') usedCurrencies.add(e.c);
-            
-            if(e.splitType === 'custom') {
-                for(let m in e.customPercs) balances[m] -= amtHKD * (e.customPercs[m] / 100);
-            } else {
-                let subTotalRatio = 0;
-                e.participants.forEach(m => {
-                    const frac = parseFraction(g.percs[m] !== undefined ? g.percs[m] : 1);
-                    subTotalRatio += frac;
-                });
-                if (subTotalRatio <= 0) subTotalRatio = e.participants.length;
-                e.participants.forEach(m => {
-                    const frac = parseFraction(g.percs[m] !== undefined ? g.percs[m] : 1);
-                    balances[m] -= amtHKD * (frac / subTotalRatio);
-                });
-            }
+            const amtHKD = e.a * (rates[e.c] || 1); balances[e.p] += amtHKD; totalHKD += amtHKD; if (e.c !== 'HKD') usedCurrencies.add(e.c);
+            if(e.splitType === 'custom') { for(let m in e.customPercs) balances[m] -= amtHKD * (e.customPercs[m] / 100); }
+            else { let subTotalPerc = 0; e.participants.forEach(m => subTotalPerc += (g.percs[m] || 0)); e.participants.forEach(m => balances[m] -= amtHKD * ((g.percs[m] || 0) / subTotalPerc)); }
         });
-
-        const resDiv = document.getElementById('gRes');
-        let resHTML = `<div class="glass-card" style="margin-bottom:0; background:#E3F2FD;">
-            <div style="font-size:1.05rem; font-weight:bold;">總支出: HKD $${totalHKD.toFixed(1)}</div>
-            <hr style="border:0; border-top:1px solid #B3E5FC; margin:10px 0;">`;
-        
+        const resDiv = document.getElementById('gRes'); let resHTML = `<div class="glass-card" style="margin-bottom:0; background:#E3F2FD;"><strong>總支出: HKD $${totalHKD.toFixed(1)}</strong><hr style="border:0; border-top:1px solid #B3E5FC;">`;
         let creditors = [], debtors = [];
-        for(let m in balances) {
-            if(balances[m] > 0.1) creditors.push({n:m, a:balances[m]});
-            else if(balances[m] < -0.1) debtors.push({n:m, a:Math.abs(balances[m])});
-        }
-        
-        let hasSettlement = false;
-        debtors.forEach(d => {
-            creditors.forEach(c => {
+        for(let m in balances) { if(balances[m] > 0.1) creditors.push({n:m, a:balances[m]}); else if(balances[m] < -0.1) debtors.push({n:m, a:Math.abs(balances[m])}); }
+        debtors.forEach(d => { creditors.forEach(c => {
                 let pay = Math.min(d.a, c.a);
                 if(pay > 0.1) {
-                    hasSettlement = true;
-                    const sKey = `${d.n}_to_${c.n}`;
-                    const sData = g.settlements[sKey] || { done: false, paid: 0, note: '' };
-                    
-                    let foreignNote = "";
-                    usedCurrencies.forEach(cur => {
-                        foreignNote += ` ≈ ${(pay / rates[cur]).toFixed(0)} ${cur} /`;
-                    });
+                    let foreignNote = ""; usedCurrencies.forEach(cur => { foreignNote += ` ≈ ${(pay / rates[cur]).toFixed(0)} ${cur} /`; });
                     let noteHTML = foreignNote ? `<span class="settle-foreign">${foreignNote.slice(0, -1)}</span>` : "";
-
-                    const paidAmt = parseFloat(sData.paid) || 0;
-                    const remaining = sData.done ? 0 : Math.max(0, pay - paidAmt);
-                    const isFullySettled = sData.done || remaining <= 0.01;
-
-                    resHTML += `
-                    <div class="settle-line ${isFullySettled ? 'is-settled' : ''}">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                            <div>
-                                👉 <strong>${d.n}</strong> 俾 <strong>${c.n}</strong>
-                                <div style="font-size:1.15rem; color:${isFullySettled ? '#2E7D32' : '#ff5252'}; font-weight:800; margin-top:3px;">
-                                    ${isFullySettled ? '✅ 已找清' : `HKD $${remaining.toFixed(1)}`}
-                                    ${(!isFullySettled && paidAmt > 0) ? `<span style="font-size:0.75rem; color:#666; font-weight:normal;">(原額: $${pay.toFixed(1)})</span>` : ''}
-                                </div>
-                                ${noteHTML}
-                            </div>
-                            <label style="display:inline-flex; align-items:center; gap:5px; font-size:0.85rem; cursor:pointer; background:white; padding:4px 8px; border-radius:8px; border:1px solid #B3E5FC;">
-                                <input type="checkbox" ${sData.done ? 'checked' : ''} onchange="toggleSettleDone('${sKey}', ${pay.toFixed(2)}, this.checked)">
-                                <span>已找清</span>
-                            </label>
-                        </div>
-                        
-                        <div class="settle-inputs">
-                            <div>
-                                <span style="color:#555;">已還金額 (HKD)：</span>
-                                <input type="number" step="any" placeholder="0" value="${sData.paid || ''}" onchange="updateSettlePaid('${sKey}', ${pay.toFixed(2)}, this.value)">
-                            </div>
-                            <div>
-                                <span style="color:#555;">備註：</span>
-                                <input type="text" placeholder="如 PayMe / 現金" value="${sData.note || ''}" onchange="updateSettleNote('${sKey}', this.value)">
-                            </div>
-                        </div>
-                    </div>`;
-                    
-                    d.a -= pay;
-                    c.a -= pay;
+                    resHTML += `<div class="settle-line">👉 <strong>${d.n}</strong> 俾 <strong>${c.n}</strong><br><span style="font-size:1.1rem; color:#ff5252; font-weight:800;">HKD $${pay.toFixed(1)}</span>${noteHTML}</div>`;
+                    d.a -= pay; c.a -= pay;
                 }
             });
         });
-        
-        if (!hasSettlement) {
-            resHTML += `<div style="text-align:center; padding:10px; color:#0288D1;">🎉 大家啱啱好，唔使找數！</div>`;
-        }
-        resHTML += "</div>";
-        resDiv.innerHTML = resHTML;
-        resDiv.classList.remove('hide');
-    }
-
-    function toggleSettleDone(key, origPay, isChecked) {
-        const g = groups[curGroupKey];
-        if (!g.settlements) g.settlements = {};
-        if (!g.settlements[key]) g.settlements[key] = { done: false, paid: 0, note: '' };
-        g.settlements[key].done = isChecked;
-        if (isChecked) {
-            g.settlements[key].paid = origPay;
-        }
-        saveAll();
-        calcGroup();
-    }
-
-    function updateSettlePaid(key, origPay, val) {
-        const g = groups[curGroupKey];
-        if (!g.settlements) g.settlements = {};
-        if (!g.settlements[key]) g.settlements[key] = { done: false, paid: 0, note: '' };
-        const paidVal = parseFloat(val) || 0;
-        g.settlements[key].paid = paidVal;
-        if (paidVal >= origPay && origPay > 0) {
-            g.settlements[key].done = true;
-        } else if (g.settlements[key].done && paidVal < origPay) {
-            g.settlements[key].done = false;
-        }
-        saveAll();
-        calcGroup();
-    }
-
-    function updateSettleNote(key, noteText) {
-        const g = groups[curGroupKey];
-        if (!g.settlements) g.settlements = {};
-        if (!g.settlements[key]) g.settlements[key] = { done: false, paid: 0, note: '' };
-        g.settlements[key].note = noteText.trim();
-        saveAll();
+        resDiv.innerHTML = (resHTML + "</div>") || "大家啱啱好！"; resDiv.classList.remove('hide');
     }
 
     function exportData() {
         let csv = "\uFEFF類別,主鍵,子鍵,數值,貨幣,付款人,參與者\n";
         debts.forEach(d => csv += `個人債務,${d.p},${d.r},${d.a},${d.c},,\n`);
         for(let c in rates) csv += `匯率,${c},,${rates[c]},,,\n`;
-        for(let gN in groups) {
-            const g = groups[gN];
-            csv += `群組成員,${gN},,${g.members.join('|')},,,\n`;
-            for(let m in g.percs) csv += `群組佔比,${gN},${m},${g.percs[m]},,,\n`;
-            g.exps.forEach(e => csv += `群組支出,${gN},${e.r},${e.a},${e.c},${e.p},${e.participants.join('|')}\n`);
-        }
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-        link.download = "DebtPro_Backup.csv";
-        link.click();
+        for(let gN in groups) { const g = groups[gN]; csv += `群組成員,${gN},,${g.members.join('|')},,,\n`; for(let m in g.percs) csv += `群組佔比,${gN},${m},${g.percs[m]},,,\n`; g.exps.forEach(e => csv += `群組支出,${gN},${e.r},${e.a},${e.c},${e.p},${e.participants.join('|')}\n`); }
+        const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); link.download = "DebtPro_Backup.csv"; link.click();
     }
-    
     function importData(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
+        const file = e.target.files[0]; const reader = new FileReader();
         reader.onload = function(f) {
             try {
-                const lines = f.target.result.replace(/^\uFEFF/, '').split(/\r?\n/);
-                debts = []; groups = {}; rates = {"HKD":1};
+                const lines = f.target.result.replace(/^\uFEFF/, '').split(/\r?\n/); debts = []; groups = {}; rates = {"HKD":1};
                 for(let i=1; i<lines.length; i++) {
-                    const c = lines[i].split(',');
-                    if(c.length < 4) continue;
-                    const type=c[0], key=c[1], subKey=c[2], val=c[3], cur=c[4], payer=c[5], parts=c[6];
-                    if(type==='個人債務') debts.push({p:key, r:subKey, a:parseFloat(val), c:cur});
-                    else if(type==='匯率') rates[key]=parseFloat(val);
-                    else if(type==='群組成員') { if(!groups[key]) groups[key]={members:[],percs:{},exps:[],settlements:{}, defaultSplitMode: 'even'}; groups[key].members=val.split('|'); }
-                    else if(type==='群組佔比') { if(!groups[key]) groups[key]={members:[],percs:{},exps:[],settlements:{}, defaultSplitMode: 'even'}; groups[key].percs[subKey]=val; }
-                    else if(type==='群組支出') { if(!groups[key]) groups[key]={members:[],percs:{},exps:[],settlements:{}, defaultSplitMode: 'even'}; groups[key].exps.push({p:payer, a:parseFloat(val), c:cur, r:subKey, participants:parts.split('|'), splitType:'default'}); }
+                    const c = lines[i].split(','); if(c.length < 4) continue; const type=c[0], key=c[1], subKey=c[2], val=c[3], cur=c[4], payer=c[5], parts=c[6];
+                    if(type==='個人債務') debts.push({p:key, r:subKey, a:parseFloat(val), c:cur}); else if(type==='匯率') rates[key]=parseFloat(val);
+                    else if(type==='群組成員') { if(!groups[key]) groups[key]={members:[],percs:{},exps:[]}; groups[key].members=val.split('|'); }
+                    else if(type==='群組佔比') { if(!groups[key]) groups[key]={members:[],percs:{},exps:[]}; groups[key].percs[subKey]=parseFloat(val); }
+                    else if(type==='群組支出') { if(!groups[key]) groups[key]={members:[],percs:{},exps:[]}; groups[key].exps.push({p:payer, a:parseFloat(val), c:cur, r:subKey, participants:parts.split('|'), splitType:'default'}); }
                 }
-                saveAll();
-                alert('匯入成功！');
+                saveAll(); alert('匯入成功！');
             } catch(err) { alert('失敗！'); }
         };
         reader.readAsText(file);
     }
-    
-    function clearAllData() {
-        if(confirm('⚠️ 永久清空？')) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-    
-    function switchTab(t) {
-        document.getElementById('debtSection').classList.toggle('hide', t !== 'debt');
-        document.getElementById('groupSection').classList.toggle('hide', t !== 'group');
-        document.getElementById('tabDebt').classList.toggle('active', t === 'debt');
-        document.getElementById('tabGroup').classList.toggle('active', t === 'group');
-    }
-    
+    function clearAllData() { if(confirm('⚠️ 永久清空？')) { localStorage.clear(); location.reload(); } }
+    function switchTab(t) { document.getElementById('debtSection').classList.toggle('hide', t !== 'debt'); document.getElementById('groupSection').classList.toggle('hide', t !== 'group'); document.getElementById('tabDebt').classList.toggle('active', t === 'debt'); document.getElementById('tabGroup').classList.toggle('active', t === 'group'); }
     updateUI();
 </script>
 
